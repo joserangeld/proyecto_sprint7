@@ -1,8 +1,11 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-     
-car_data = pd.read_csv('vehicles_us.csv') # leer los datos
+
+
+car_data = pd.read_csv('vehicles_us.csv') # leer los datos|
+st.header('ANALISIS DE DATOS DE VEHICULOS')
+
 less = st.dataframe(car_data) # mostrar el conjunto de datos
 hist_button = st.button('Construir histograma') # crear un botón
      
@@ -19,4 +22,3 @@ if hist_button: # al hacer clic en el botón
 if less:
     st.write('Número de filas y columnas del conjunto de datos:', car_data.shape)
 
-    

@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-# Función para cargar y limpiar los datos (replicamos el proceso anterior)
+# Función para cargar y limpiar los datos (se copia el proceso de EDA.ipynb)
 @st.cache_data
 def load_and_clean_data(file_path):
     car_data = pd.read_csv(file_path)
@@ -60,7 +60,7 @@ st.title(' Análisis de Vehículos Usados en Venta')
 st.markdown('Exploración interactiva del conjunto de datos `vehicles_us.csv`.')
 
 # Cargar los datos limpios
-df_clean = load_and_clean_data('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
+df_clean = load_and_clean_data('vehicles_us.csv')
 
 # --- Barra Lateral (Filtros) ---
 st.sidebar.header('Filtros y Controles')

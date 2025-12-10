@@ -5,7 +5,7 @@ import plotly.express as px
 # Función para cargar y limpiar los datos (replicamos el proceso anterior)
 @st.cache_data
 def load_and_clean_data(file_path):
-    df = pd.read_csv(file_path)
+    df = pd.read_csv('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
 
     # 1. Limpieza de 'is_4wd'
     df['is_4wd'] = df['is_4wd'].fillna(0).astype(int)

@@ -6,7 +6,7 @@ import numpy as np
 # Función para cargar y limpiar los datos (replicamos el proceso anterior)
 @st.cache_data
 def load_and_clean_data(file_path):
-    car_data = pd.read_csv('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
+    car_data = pd.read_csv(file_path)
 
    # 1. Manejar 'is_4wd': Rellenar NaN con 0 y convertir a int
     car_data['is_4wd'] = car_data['is_4wd'].fillna(0).astype(int)

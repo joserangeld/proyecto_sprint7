@@ -1,56 +1,66 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import numpy as np
 
 # Función para cargar y limpiar los datos (replicamos el proceso anterior)
 @st.cache_data
 def load_and_clean_data(file_path):
-    df = pd.read_csv('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
+    car_data = pd.read_csv('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
 
-    # 1. Limpieza de 'is_4wd'
-    df['is_4wd'] = df['is_4wd'].fillna(0).astype(int)
+   # 1. Manejar 'is_4wd': Rellenar NaN con 0 y convertir a int
+    car_data['is_4wd'] = car_data['is_4wd'].fillna(0).astype(int)
 
-    # 2. Imputación por mediana agrupada por 'model'
-    median_values = df.groupby('model')[['model_year', 'cylinders', 'odometer']].median()
-    
+    # 2. Imputar 'model_year', 'cylinders' y 'odometer' usando la mediana por 'model'
+
+    # Calcular la mediana de estas columnas agrupadas por 'model'
+    median_values = car_data.groupby('model')[['model_year', 'cylinders', 'odometer']].median()
+
+    # Función para rellenar NaN con el valor mediano del modelo
     def impute_by_model(row, column, median_df):
         if pd.isnull(row[column]):
+        # Intenta obtener la mediana para el modelo actual, si existe
             try:
-                return median_df.loc[row['model'], column]
+             return median_df.loc[row['model'], column]
             except KeyError:
-                return df[column].median()
+            # Si el modelo no está en el índice de medianas (caso raro), devuelve NaN temporalmente
+             return np.nan 
         return row[column]
 
-    df['model_year'] = df.apply(lambda row: impute_by_model(row, 'model_year', median_values), axis=1)
-    df['cylinders'] = df.apply(lambda row: impute_by_model(row, 'cylinders', median_values), axis=1)
-    df['odometer'] = df.apply(lambda row: impute_by_model(row, 'odometer', median_values), axis=1)
-    
-    # 3. Limpieza de 'paint_color'
-    df['paint_color'].fillna('unknown', inplace=True)
+    car_data['model_year'] = car_data.apply(lambda row: impute_by_model(row, 'model_year', median_values), axis=1)
+    car_data['cylinders'] = car_data.apply(lambda row: impute_by_model(row, 'cylinders', median_values), axis=1)
+    car_data['odometer'] = car_data.apply(lambda row: impute_by_model(row, 'odometer', median_values), axis=1)
 
-    # 4. Corrección de tipos de datos y creación de 'manufacturer'
-    df['model_year'] = df['model_year'].astype(int)
-    df['cylinders'] = df['cylinders'].astype(int)
-    df['odometer'] = df['odometer'].astype(int)
-    df['date_posted'] = pd.to_datetime(df['date_posted'])
-    df['manufacturer'] = df['model'].apply(lambda x: x.split(' ')[0].capitalize())
-    
-    # Excluir 'unknown' de manufacturer, ya que no son útiles para el análisis
-    df = df[df['manufacturer'] != 'Unknown']
+    # Imputación de 'model_year', 'cylinders' y 'odometer' con la mediana global restante
+    # (Para los casos donde el modelo en sí mismo tiene NaN, ya que no se encontró mediana)
+    car_data['model_year'].fillna(car_data['model_year'].median(), inplace=True)
+    car_data['cylinders'].fillna(car_data['cylinders'].median(), inplace=True)
+    car_data['odometer'].fillna(car_data['odometer'].median(), inplace=True)
 
-    return df
+    # 3. Manejar 'paint_color': Rellenar NaN con 'unknown'
+    car_data['paint_color'].fillna('unknown', inplace=True)
+
+    # 4. Corregir tipos de datos
+    car_data['model_year'] = car_data['model_year'].astype(int)
+    car_data['cylinders'] = car_data['cylinders'].astype(int)
+    car_data['odometer'] = car_data['odometer'].astype(int)
+    car_data['date_posted'] = pd.to_datetime(car_data['date_posted'])
+    # Crear la columna 'manufacturer' a partir de 'model' (primer palabra) para filtros útiles
+    car_data['manufacturer'] = car_data['model'].apply(lambda x: x.split(' ')[0].capitalize())
+
+    return car_data
 
 # --- Configuración de la Aplicación Streamlit ---
 st.set_page_config(
-    page_title="Análisis de Vehículos Usados 🚗", 
+    page_title="Análisis de Vehículos Usados ", 
     layout="wide"
 )
 
-st.title('🚗 Análisis de Vehículos Usados en Venta')
+st.title(' Análisis de Vehículos Usados en Venta')
 st.markdown('Exploración interactiva del conjunto de datos `vehicles_us.csv`.')
 
 # Cargar los datos limpios
-df_clean = load_and_clean_data("vehicles_us.csv")
+df_clean = load_and_clean_data('C:\\Users\\joser\\Documents\\tripleten\\GitHub\\proyecto_sprint7\\vehicles_us.csv')
 
 # --- Barra Lateral (Filtros) ---
 st.sidebar.header('Filtros y Controles')

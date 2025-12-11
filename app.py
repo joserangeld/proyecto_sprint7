@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-# Función para cargar y limpiar los datos (se copia el proceso de EDA.ipynb)
+# -----------------Función para cargar y limpiar los datos (se copia el proceso de EDA.ipynb)--------------
 @st.cache_data
 def load_and_clean_data(file_path):
     car_data = pd.read_csv(file_path)
@@ -18,8 +18,7 @@ def load_and_clean_data(file_path):
     car_data['model_year'] = car_data.groupby('model')['model_year'].transform(lambda x: x.fillna(x.median()))
     car_data['cylinders'] = car_data.groupby('model')['cylinders'].transform(lambda x: x.fillna(x.median()))
 
-    # 4. Tratar `odometer`
-    # Imputar nulos con la mediana del grupo de 'model_year' y 'condition'
+    # 4. Tratar `odometer`. Imputar nulos con la mediana del grupo de 'model_year' y 'condition'
     car_data['odometer'] = car_data.groupby(['model_year', 'condition'])['odometer'].transform(lambda x: x.fillna(x.median()))
    
    # Convertir columnas a enteros (después de imputar los nulos en `model_year` y `cylinders`)
@@ -32,7 +31,8 @@ def load_and_clean_data(file_path):
    
     return car_data
 
-## --- Configuración de la Aplicación Streamlit ---
+## ---------------- Configuración de la Aplicación Streamlit ------------
+
 st.set_page_config(
     page_title="Análisis de Vehículos Usados ", 
     layout="wide"
@@ -47,23 +47,42 @@ st.dataframe(car_clean)
 st.markdown(f"Mostrando **{len(car_clean)}** registros de **{len(car_clean)}** en total.")
 
 st.subheader('Conteo por Tipo de Vehículo')
+
+#--- Distribuciones de Variables Clave (Columnas) ---
+
+col1, col2 = st.columns(2)
+
+with col1:
+    # Gráfico de barras para el fabricante
+    type_grouped = car_clean.groupby(['manufacturer', 'type']).size().reset_index(name='count')
+    fig = px.bar(
+        type_grouped,
+        x='manufacturer',
+        y='count',
+        color='type',
+        title='Distribución de Tipos de Vehículo por Fabricante',
+        labels={'manufacturer': 'Fabricante','count': 'Cantidad de Vehículos','type': 'Tipo de Vehículo'}
+    )
     
-# Gráfico de barras para el tipo de vehículo
-type_counts = car_clean['type'].value_counts().reset_index()
-type_counts.columns = ['Type', 'Count']
+    st.plotly_chart(fig, use_container_width=True)  
+
+with col2:  
+    # Gráfico de barras para el tipo de vehículo
+    type_counts = car_clean['type'].value_counts().reset_index()
+    type_counts.columns = ['Type', 'Count']
     
-fig_type_count = px.bar(
-    type_counts,
-    x='Type',
-    y='Count',
-    orientation='v',
-    color='Type',
+    fig_type_count = px.bar(
+        type_counts,
+        x='Type',
+        y='Count',
+        orientation='v',
+        color='Type',
     title='Número de Anuncios por Tipo de Vehículo',
     labels={'Count': 'Número de Vehículos', 'Type': 'Tipo de Vehículo'}
     )
-st.plotly_chart(fig_type_count, use_container_width=True)
+    st.plotly_chart(fig_type_count, use_container_width=True)
 
-# Widget de checkbox para mostrar/ocultar el scatter plot
+# checkbox para mostrar/ocultar el scatter plot
 show_scatter = st.checkbox(
     'Mostrar Diagrama de Dispersión: Precio vs. Odómetro', 
     value=True
@@ -89,14 +108,30 @@ if show_scatter:
 # --- Distribución de Antigüedad del Vehículo ---
 
 st.header('Análisis de Antigüedad')
-# Gráfico de histograma para model_year
-fig_year_hist = px.histogram(
-    car_clean,
-    x='model_year',
-    nbins=50,
-    color='manufacturer',
-    title='Distribución de Vehículos por Año del Modelo',
-    labels={'model_year': 'Año del Modelo', 'count': 'Frecuencia'},
+col1, col2 = st.columns(2)
+
+with col1:
+    # Gráfico de barras para model_year
+       
+    fig_year_bar = px.histogram(
+        car_clean,
+        x='model_year',
+        nbins=100,
+        color = 'condition',
+        title='Condición de Vehículos por Año del Modelo',
+        labels={'model_year': 'Año del Modelo', 'condition': 'Condición'}
+    )
+    st.plotly_chart(fig_year_bar, use_container_width=True)
+
+with col2:  
+    # Gráfico de histograma para model_year
+    fig_year_hist = px.histogram(
+        car_clean,
+        x='model_year',
+        nbins=50,
+        color='manufacturer',
+        title='Distribución de Vehículos por Año del Modelo',
+        labels={'model_year': 'Año del Modelo', 'count': 'Frecuencia'},
     
-)
-st.plotly_chart(fig_year_hist, use_container_width=True)
+    )
+    st.plotly_chart(fig_year_hist, use_container_width=True)

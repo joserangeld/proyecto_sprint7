@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-# -----------------Función para cargar y limpiar los datos (se copia el proceso de EDA.ipynb)--------------
+# -----------------1.Función para cargar y limpiar los datos (se copia el proceso de EDA.ipynb)--------------
 @st.cache_data
 def load_and_clean_data(file_path):
     car_data = pd.read_csv(file_path)
@@ -31,7 +31,7 @@ def load_and_clean_data(file_path):
    
     return car_data
 
-## ---------------- Configuración de la Aplicación Streamlit ------------
+# --------------------2. Configuración de la Aplicación Streamlit ------------
 
 st.set_page_config(
     page_title="Análisis de Vehículos Usados ", 
@@ -44,7 +44,7 @@ st.markdown('Exploración interactiva del conjunto de datos `vehicles_us.csv`.')
 car_clean = load_and_clean_data('vehicles_us.csv')
 
 
-#-------- Visualización de Datos Limpios ------------
+#--------2.1 Visualización de Datos Limpios ------------
 manufacturer_counts = car_clean['manufacturer'].value_counts()
 MIN_ADS = 1000
 low_freq_manufacturers = manufacturer_counts[manufacturer_counts < MIN_ADS].index.tolist()
@@ -64,7 +64,7 @@ st.dataframe(car_filtered)
 st.markdown(f"Mostrando **{len(car_filtered)}** registros de **{len(car_clean)}** en total.")    
 
 
-#-------- Distribuciones de Variables Clave (Columnas) -----
+#-------- 2.2 Distribuciones de Variables Clave (Columnas) -----
 st.subheader('Conteo por Tipo de Vehículo')
 col1, col2 = st.columns(2)
 
@@ -98,7 +98,7 @@ with col2:
     )
     st.plotly_chart(fig_type_count, use_container_width=True)
 
-# -------checkbox para mostrar/ocultar el diagrama de dispersión -------
+# -------2.3 Checkbox para mostrar/ocultar el diagrama de dispersión -------
 st.subheader('Análisis por Millaje (Odómetro)')
 col1, col2 = st.columns(2)
 with col1:
@@ -134,7 +134,7 @@ with col2:
         st.plotly_chart(fig, use_container_width=True)
 
 
-# ------- Distribución de Antigüedad del Vehículo ------
+# -------2.4 Distribución de Antigüedad del Vehículo ------
 
 st.subheader('Análisis de Antigüedad')
 col1, col2 = st.columns(2)
@@ -164,3 +164,80 @@ with col2:
     
     )
     st.plotly_chart(fig_year_hist, use_container_width=True)
+
+
+#------ 2.5 Análisis comparativo de Precios ----------
+st.subheader('Análisis comparativo de Precios')
+
+# Crear la lista de fabricantes con nombres estandarizados
+manufacturer_mapping = {
+        'Chevrolet': 'Chevrolet', 'Gmc': 'GMC', 'Bmw': 'BMW', 'Ford': 'Ford'
+    }
+car_clean['manufacturer'] = car_clean['manufacturer'].replace(manufacturer_mapping)
+
+# Definir las Opciones de Selección
+all_manufacturers = sorted(car_clean['manufacturer'].unique())
+
+#  Selectbox para la Selección del Usuario
+col1, col2 = st.columns(2)
+
+with col1:
+    manufacturer_1 = st.selectbox(
+        'Selecciona el Fabricante 1 (Color Azul):',
+        options=all_manufacturers,
+        index=all_manufacturers.index('Ford') if 'Ford' in all_manufacturers else 0,
+        key='mfg1'
+    )
+
+with col2:
+    # Usamos un valor por defecto diferente para el segundo, si es posible
+    default_index_2 = all_manufacturers.index('Chevrolet') if 'Chevrolet' in all_manufacturers else (1 if len(all_manufacturers) > 1 else 0)
+    manufacturer_2 = st.selectbox(
+        'Selecciona el Fabricante 2 (Color Naranja):',
+        options=all_manufacturers,
+        index=default_index_2,
+        key='mfg2'
+    )
+
+#  Lógica de Filtrado y Visualización. combinar las dos selecciones en una lista
+selected_manufacturers = [manufacturer_1, manufacturer_2]
+
+if manufacturer_1 == manufacturer_2:
+    st.warning(" Por favor, selecciona **dos fabricantes diferentes** para realizar una comparación válida.")
+else:
+    # Filtrar el DataFrame para incluir solo los fabricantes seleccionados
+    car_compare = car_clean[car_clean['manufacturer'].isin(selected_manufacturers)]
+
+    # Determinar el rango de precios (excluyendo precios extremos para mejor visualización)
+    price_max = car_compare['price'].quantile(0.99)
+    price_min = car_compare['price'].quantile(0.01)
+
+    #crear un mapa de colores personalizado ( el la prueba los dos se mostraban azules)
+    color_map = {
+        manufacturer_1: '#1f77b4',  # Azul (Color 1)
+        manufacturer_2: "#f9ba1b"   # Rojo (Color 2)
+    }
+    
+    # Crear el Histograma 
+    fig = px.histogram(
+        car_compare,
+        x='price',
+        color='manufacturer',
+        nbins=100,
+        histnorm='percent',
+        title=f'Distribución de Precios: {manufacturer_1} vs {manufacturer_2}',
+        labels={'price': 'Precio (USD)', 'count': 'Frecuencia', 'manufacturer': 'Fabricante'},
+        opacity=0.65,
+        barmode='overlay',
+        range_x=[price_min, price_max],
+        color_discrete_map=color_map
+    )
+
+    fig.update_layout(yaxis_title="Porcentaje de Anuncios", legend_title_text="Fabricante")
+
+    # 6. Mostrar el Gráfico en Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+# -------------------Final de la Aplicación Streamlit ------------------

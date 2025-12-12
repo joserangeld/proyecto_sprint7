@@ -98,27 +98,40 @@ with col2:
     )
     st.plotly_chart(fig_type_count, use_container_width=True)
 
-# -------checkbox para mostrar/ocultar el scatter plot -------
-show_scatter = st.checkbox(
-    'Mostrar Diagrama de Dispersión: Precio vs. Odómetro', 
+# -------checkbox para mostrar/ocultar el diagrama de dispersión -------
+st.subheader('Análisis por Millaje (Odómetro)')
+col1, col2 = st.columns(2)
+with col1:
+    show_scatter = st.checkbox(
+        'Mostrar Diagrama de Dispersión: Precio vs. Odómetro', 
     value=True
 )
-
-if show_scatter:
-    st.subheader('Precio vs. Odómetro (Kilometraje)')
-    
-    # Diagrama de dispersión: Precio vs Odómetro, coloreado por Condición
-    fig_scatter = px.scatter(
-        car_clean,
-        x='odometer',
-        y='price',
-        color='condition',
-        hover_data=['model', 'manufacturer'],
-        title='Precio vs. Kilometraje por Condición',
-        labels={'odometer': 'Kilometraje (Millas)', 'price': 'Precio ($)'}
+    if show_scatter:   
+        # Diagrama de dispersión: Precio vs Odómetro, coloreado por Condición
+        fig_scatter = px.scatter(
+            car_clean,
+            x='odometer',
+            y='price',
+            color='condition',
+            hover_data=['model', 'manufacturer'],
+        title='Precio vs. Millaje por Condición',
+        labels={'odometer': 'Millaje (Millas)', 'price': 'Precio ($)'}
     )
-    st.plotly_chart(fig_scatter, use_container_width=True)
+        st.plotly_chart(fig_scatter, use_container_width=True)
 
+with col2:
+    show_hist = st.checkbox(
+        'Mostrar Histograma: Odómetro', 
+    value=True
+)
+    if show_hist:   
+        # Histograma de Odómetro
+        fig = px.histogram(
+            car_clean, x='odometer',
+            title='Distribución de Millaje de Vehículos',
+            labels={'odometer': 'Millaje (Millas)', 'count': 'Frecuencia'}
+            ) # crear un histograma
+        st.plotly_chart(fig, use_container_width=True)
 
 
 # ------- Distribución de Antigüedad del Vehículo ------

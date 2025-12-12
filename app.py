@@ -43,13 +43,29 @@ st.markdown('Exploración interactiva del conjunto de datos `vehicles_us.csv`.')
 # Cargar los datos limpios
 car_clean = load_and_clean_data('vehicles_us.csv')
 
-st.dataframe(car_clean)
-st.markdown(f"Mostrando **{len(car_clean)}** registros de **{len(car_clean)}** en total.")
 
-st.subheader('Conteo por Tipo de Vehículo')
+#-------- Visualización de Datos Limpios ------------
+manufacturer_counts = car_clean['manufacturer'].value_counts()
+MIN_ADS = 1000
+low_freq_manufacturers = manufacturer_counts[manufacturer_counts < MIN_ADS].index.tolist()
+high_freq_manufacturers = manufacturer_counts[manufacturer_counts >= MIN_ADS].index.tolist()
+
+show_low_freq = st.checkbox(
+    f'Incluir Fabricantes con menos de {MIN_ADS} anuncios (Marcas Menos Comunes)',
+    value=False, # Por defecto, NO se muestran (True = se muestran)
+    help=f'Si se desmarca, se muestran todos los fabricantes.'
+)
+if  show_low_freq:
+      car_filtered = car_clean
+else:
+      car_filtered = car_clean[car_clean['manufacturer'].isin(high_freq_manufacturers)]
+
+st.dataframe(car_filtered)
+st.markdown(f"Mostrando **{len(car_filtered)}** registros de **{len(car_clean)}** en total.")    
+
 
 #-------- Distribuciones de Variables Clave (Columnas) -----
-
+st.subheader('Conteo por Tipo de Vehículo')
 col1, col2 = st.columns(2)
 
 with col1:

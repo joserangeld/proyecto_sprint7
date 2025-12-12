@@ -48,7 +48,7 @@ st.markdown(f"Mostrando **{len(car_clean)}** registros de **{len(car_clean)}** e
 
 st.subheader('Conteo por Tipo de Vehículo')
 
-#--- Distribuciones de Variables Clave (Columnas) ---
+#-------- Distribuciones de Variables Clave (Columnas) -----
 
 col1, col2 = st.columns(2)
 
@@ -82,7 +82,7 @@ with col2:
     )
     st.plotly_chart(fig_type_count, use_container_width=True)
 
-# checkbox para mostrar/ocultar el scatter plot
+# -------checkbox para mostrar/ocultar el scatter plot -------
 show_scatter = st.checkbox(
     'Mostrar Diagrama de Dispersión: Precio vs. Odómetro', 
     value=True
@@ -105,9 +105,9 @@ if show_scatter:
 
 
 
-# --- Distribución de Antigüedad del Vehículo ---
+# ------- Distribución de Antigüedad del Vehículo ------
 
-st.header('Análisis de Antigüedad')
+st.subheader('Análisis de Antigüedad')
 col1, col2 = st.columns(2)
 
 with col1:

@@ -171,7 +171,7 @@ st.subheader('Análisis comparativo de Precios')
 
 # Crear la lista de fabricantes con nombres estandarizados
 manufacturer_mapping = {
-        'Chevrolet': 'Chevrolet', 'Gmc': 'GMC', 'Bmw': 'BMW', 'Ford': 'Ford'
+         'Gmc': 'GMC', 'Bmw': 'BMW'
     }
 car_clean['manufacturer'] = car_clean['manufacturer'].replace(manufacturer_mapping)
 

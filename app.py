@@ -64,7 +64,7 @@ st.dataframe(car_filtered)
 st.markdown(f"Mostrando **{len(car_filtered)}** registros de **{len(car_clean)}** en total.")    
 
 
-#-------- 2.2 Distribuciones de Variables Clave (Columnas) -----
+#-------- 2.2 Distribuciones de por tipo de vehículo -----
 st.subheader('Conteo por Tipo de Vehículo')
 col1, col2 = st.columns(2)
 

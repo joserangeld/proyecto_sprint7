@@ -208,11 +208,11 @@ else:
     # Filtrar el DataFrame para incluir solo los fabricantes seleccionados
     car_compare = car_clean[car_clean['manufacturer'].isin(selected_manufacturers)]
 
-    # Determinar el rango de precios (excluyendo precios extremos para mejor visualización)
+    # Determinar el rango de precios (excluyendo precios extremos, posibles atipicos)
     price_max = car_compare['price'].quantile(0.99)
     price_min = car_compare['price'].quantile(0.01)
 
-    #crear un mapa de colores personalizado ( el la prueba los dos se mostraban azules)
+    #crear un mapa de colores personalizado ( en la prueba los dos se mostraban azules)
     color_map = {
         manufacturer_1: '#1f77b4',  # Azul (Color 1)
         manufacturer_2: "#f9ba1b"   # Rojo (Color 2)

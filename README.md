@@ -1,16 +1,17 @@
 # proyecto_sprint7
-Las tareas de este proyecto incluyen la creación y gestión de entornos virtuales de Python y el desarrollo de una aplicación web. La cual es visible en :
+Las tareas de este proyecto incluyen la creación y gestión de entornos virtuales de Python y el desarrollo de una aplicación web. 
 
 #  Descripción de la aplicación
 
-La aplicación web interactiva construida con **Streamlit** y **Plotly** para la exploración y análisis del conjunto de datos de anuncios de vehículos usados (`vehicles_us.csv`). Permite a los usuarios interactuar con los datos, filtrar por fabricantes y visualizar distribuciones clave como el precio, el millaje (odómetro) y el año del modelo.
+La aplicación web permite la exploración y análisis del conjunto de datos de anuncios de vehículos usados (`vehicles_us.csv`),mediante el filtrado por fabricantes y visualización de distribuciones clave como el precio, el millaje (odómetro) y el año del modelo.
+
 La aplicación es visible en https://proyecto-sprint7-xnhs.onrender.com
 
 ## Librerias Utilizadas
 
 * **Streamlit:** Para la creación de la interfaz web interactiva.
 * **Pandas & NumPy:** Para la carga, limpieza y manipulación de datos.
-* **Plotly Express:** Para la generación de gráficos dinámicos e interactivos.
+* **Plotly Express:** Para la generación de gráficos.
 
 ## Características Principales
 
@@ -43,4 +44,5 @@ Se utilizan gráficos de barras para analizar:
 ### 6. Análisis Comparativo de Precios
 
 * **Selectores de Fabricantes:** El usuario puede seleccionar dos fabricantes de una lista para realizar una comparación directa.
-* **Histograma de Precios Superpuestos:** Muestra la distribución de precios de los dos fabricantes seleccionados en un solo gráfico, facilitando la comparación directa de rangos de precios típicos. Los precios extremos se excluyen (percentil 1 y 99) para una mejor visualización.
+* **Histograma de Precios Superpuestos:** Muestra la distribución de precios de dos fabricantes seleccionados en un solo gráfico, para la comparación de rangos de precios típicos.
+Los precios extremos se excluyen (percentil 1 y 99) para eliminar valores atipicos y tener una mejor visualización.

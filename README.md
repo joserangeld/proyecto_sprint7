@@ -39,10 +39,10 @@ Se utilizan gráficos de barras para analizar:
 
 ### 5. Análisis de Antigüedad
 
-* **Histograma de Año del Modelo:** Muestra la distribución de los vehículos por año de fabricación, segmentado por la condición del vehiculo.
+* **Histograma de Año del Modelo:** Muestra la distribución de los vehículos por año de fabricación, segmentado por la condición del vehiculo y el fabricante.
 
 ### 6. Análisis Comparativo de Precios
 
 * **Selectores de Fabricantes:** El usuario puede seleccionar dos fabricantes de una lista para realizar una comparación directa.
-* **Histograma de Precios Superpuestos:** Muestra la distribución de precios de dos fabricantes seleccionados en un solo gráfico, para la comparación de rangos de precios típicos.
+* **Histograma de Precios Superpuestos:** Muestra la distribución de precios de los fabricantes seleccionados en un solo gráfico, para la comparación de rangos de precios típicos.
 Los precios extremos se excluyen (percentil 1 y 99) para eliminar valores atipicos y tener una mejor visualización.

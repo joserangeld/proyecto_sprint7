@@ -241,3 +241,6 @@ else:
 
 
 # -------------------Final de la Aplicación Streamlit ------------------
+
+st.markdown("---")
+st.markdown("Realizado por: José Alfredo Rangel Deantes")

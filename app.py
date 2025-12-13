@@ -21,12 +21,12 @@ def load_and_clean_data(file_path):
     # 4. Tratar `odometer`. Imputar nulos con la mediana del grupo de 'model_year' y 'condition'
     car_data['odometer'] = car_data.groupby(['model_year', 'condition'])['odometer'].transform(lambda x: x.fillna(x.median()))
    
-   # Convertir columnas a enteros (después de imputar los nulos en `model_year` y `cylinders`)
+   # 5. Convertir columnas a enteros (después de imputar los nulos en `model_year` y `cylinders`)
     int_cols = ['price', 'model_year', 'cylinders', 'odometer']
     for col in int_cols:
         car_data[col] = car_data[col].round(0).astype('Int64') # Int64 maneja valores NaN como nulos
 
-     # Crear la columna 'manufacturer' a partir de 'model' (primer palabra) 
+    # 6. Crear la columna 'manufacturer' a partir de 'model' (primer palabra) 
     car_data['manufacturer'] = car_data['model'].apply(lambda x: x.split(' ')[0].capitalize())
    
     return car_data
@@ -53,7 +53,7 @@ high_freq_manufacturers = manufacturer_counts[manufacturer_counts >= MIN_ADS].in
 show_low_freq = st.checkbox(
     f'Incluir Fabricantes con menos de {MIN_ADS} anuncios (Marcas Menos Comunes)',
     value=False, # Por defecto, NO se muestran (True = se muestran)
-    help=f'Si se desmarca, se muestran todos los fabricantes.'
+    help='Si se desmarca, se muestran todos los fabricantes.'
 )
 if  show_low_freq:
       car_filtered = car_clean
